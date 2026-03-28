@@ -6,3 +6,12 @@ __pycache__/
 .cache/
 *.incomplete
 .claude/
+
+# Models (~1.1GB) -- downloaded during setup
+models/
+
+# Built during setup -- regenerated from data/raw/
+data/chunks/
+data/index/
+cache/
+

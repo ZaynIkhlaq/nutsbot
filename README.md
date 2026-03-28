@@ -26,72 +26,56 @@ If you don't have Python 3.9+:
 - **Ubuntu/Debian:** `sudo apt install python3`
 - **Windows:** Download from [python.org](https://www.python.org/downloads/)
 
+**Windows only:** You also need C++ build tools for `llama-cpp-python`. Install [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) and select "Desktop development with C++" during installation. Alternatively, install a pre-built wheel:
+```cmd
+pip install llama-cpp-python --prefer-binary
+```
+
 ---
 
-## Setup (Automatic)
+## Setup
 
-Clone the repo and run the setup script. It handles everything -- virtual environment, dependencies, model downloads, and knowledge base indexing.
+Clone the repo and run the setup script. Works on **Windows, macOS, and Linux**. It handles everything -- virtual environment, dependencies, model downloads, and knowledge base indexing.
 
 ```bash
 git clone <repo-url>
 cd nutsbot
-bash setup.sh
+python setup.py
 ```
+
+> On some systems you may need to use `python3` instead of `python`.
 
 This will:
 1. Create a Python virtual environment (`.venv/`)
 2. Install all dependencies
-3. Download the LLM and embedding models (~1.1 GB total)
-4. Build the FAQ index and response cache
+3. Download the LLM and embedding models (~1.1 GB, requires internet)
+4. Build the FAQ index and response cache (~5 minutes)
 
-It takes about 5-10 minutes depending on your internet speed.
-
----
-
-## Setup (Manual)
-
-If you prefer to do it step by step:
-
-```bash
-# 1. Clone and enter the directory
-git clone <repo-url>
-cd nutsbot
-
-# 2. Create and activate a virtual environment
-python3 -m venv .venv
-source .venv/bin/activate        # On Windows: .venv\Scripts\activate
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Download models (~1.1 GB, requires internet)
-python scripts/download_models.py
-
-# 5. Build the knowledge base (offline from here)
-python scripts/parse_official_faqs.py
-python scripts/build_chunks.py
-python scripts/build_index.py
-
-# 6. Build the FAQ cache (takes ~5 minutes, generates pre-computed answers)
-python scripts/build_faq_cache.py
-```
+After setup finishes, it tells you exactly what to run next.
 
 ---
 
 ## Running nutsbot
 
+**macOS / Linux:**
 ```bash
-source .venv/bin/activate        # On Windows: .venv\Scripts\activate
+source .venv/bin/activate
 python app.py
 ```
 
-Open your browser and go to:
-
+**Windows (Command Prompt):**
+```cmd
+.venv\Scripts\activate
+python app.py
 ```
-http://127.0.0.1:7860
+
+**Windows (PowerShell):**
+```powershell
+.venv\Scripts\Activate.ps1
+python app.py
 ```
 
-That's it. Start asking questions about NUST admissions.
+Then open [http://127.0.0.1:7860](http://127.0.0.1:7860) in your browser. That's it.
 
 ---
 
@@ -298,16 +282,26 @@ Total RAM: ~2.6 GB. Well within the 8 GB competition limit.
 ## Troubleshooting
 
 **"Module not found" errors:**
-Make sure the virtual environment is activated: `source .venv/bin/activate`
+Make sure the virtual environment is activated:
+- macOS/Linux: `source .venv/bin/activate`
+- Windows CMD: `.venv\Scripts\activate`
+- Windows PowerShell: `.venv\Scripts\Activate.ps1`
 
 **Models not found:**
 Run `python scripts/download_models.py` (requires internet).
 
 **Port 7860 already in use:**
-Kill the existing process: `lsof -ti:7860 | xargs kill -9` (macOS/Linux)
+- macOS/Linux: `lsof -ti:7860 | xargs kill -9`
+- Windows: `netstat -ano | findstr :7860` then `taskkill /PID <pid> /F`
 
 **Slow responses on CPU:**
-This is expected without GPU. Responses stream token-by-token so you see the first words quickly even if the full response takes a few seconds.
+Expected without GPU. Responses stream token-by-token so you see the first words quickly even if the full response takes a few seconds.
+
+**Windows: `setup.py` opens the wrong program:**
+Run `python setup.py` explicitly, not by double-clicking the file.
+
+**PowerShell: "cannot be loaded because running scripts is disabled":**
+Run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` then try again.
 
 ---
 
