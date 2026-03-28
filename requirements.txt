@@ -1,0 +1,11 @@
+# Runtime
+llama-cpp-python
+faiss-cpu
+onnxruntime
+tokenizers
+gradio
+numpy
+
+# Setup only (model download, data parsing)
+beautifulsoup4
+huggingface-hub
