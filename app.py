@@ -125,6 +125,102 @@ footer, .built-with, .show-api { display: none !important; }
     color: #555;
     padding: 4px 0 14px 0;
 }
+
+/* Info panel - top right corner */
+#info-panel {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+#info-toggle {
+    background: #2a2a2a;
+    border: 1px solid #333;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    color: #888;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+#info-toggle:hover { color: #C5A356; border-color: #C5A356; }
+#info-card {
+    display: none;
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 16px 20px;
+    min-width: 280px;
+    max-width: 340px;
+    color: #ccc;
+    font-size: 12px;
+    line-height: 1.6;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+#info-card.open { display: block; }
+#info-card h3 {
+    color: #C5A356;
+    font-size: 13px;
+    margin: 0 0 8px 0;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+#info-card .spec {
+    display: flex;
+    justify-content: space-between;
+    padding: 3px 0;
+    border-bottom: 1px solid #2a2a2a;
+}
+#info-card .spec:last-child { border-bottom: none; }
+#info-card .spec .label { color: #888; }
+#info-card .spec .value { color: #ddd; font-weight: 500; }
+#info-card .section { margin-top: 10px; }
+#info-card .tag {
+    display: inline-block;
+    background: #2a2a2a;
+    color: #aaa;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    margin: 2px 2px;
+}
+
+/* Title - top left */
+#title-bar {
+    position: fixed;
+    top: 14px;
+    left: 20px;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+#title-bar .logo {
+    width: 26px;
+    height: 26px;
+    background: #003366;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #C5A356;
+    font-weight: 700;
+    font-size: 13px;
+    font-family: Georgia, serif;
+}
+#title-bar .name {
+    color: #999;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.3px;
+}
 """
 
 
@@ -191,6 +287,48 @@ def respond(message, history):
 
 def build():
     with gr.Blocks(title="NUSTBot") as app:
+
+        # Title bar - top left
+        gr.HTML(
+            '<div id="title-bar">'
+            '  <div class="logo">N</div>'
+            '  <span class="name">nutsbot</span>'
+            '</div>'
+        )
+
+        # Info panel - top right
+        gr.HTML("""
+        <div id="info-panel">
+            <div id="info-card">
+                <h3>COMPETITION SPECS</h3>
+                <div class="spec"><span class="label">Event</span><span class="value">NUST Local Chatbot Competition 2026</span></div>
+                <div class="spec"><span class="label">Director</span><span class="value">Dr. Sohail Iqbal</span></div>
+                <div class="spec"><span class="label">Demo</span><span class="value">March 31, 2026</span></div>
+
+                <div class="section"><h3>HARDWARE CONSTRAINTS</h3></div>
+                <div class="spec"><span class="label">RAM</span><span class="value">8 GB max</span></div>
+                <div class="spec"><span class="label">CPU</span><span class="value">Core i5 13th Gen</span></div>
+                <div class="spec"><span class="label">GPU</span><span class="value">None</span></div>
+                <div class="spec"><span class="label">Internet</span><span class="value">Offline only</span></div>
+
+                <div class="section"><h3>THIS BOT</h3></div>
+                <div class="spec"><span class="label">LLM</span><span class="value">Qwen 2.5 1.5B (Q4)</span></div>
+                <div class="spec"><span class="label">RAM used</span><span class="value">~2.6 GB</span></div>
+                <div class="spec"><span class="label">Data</span><span class="value">nust.edu.pk/faqs</span></div>
+                <div class="spec"><span class="label">Chunks</span><span class="value">73 FAQs indexed</span></div>
+
+                <div class="section" style="margin-top:10px;">
+                    <span class="tag">FAISS</span>
+                    <span class="tag">ONNX</span>
+                    <span class="tag">llama.cpp</span>
+                    <span class="tag">Gradio</span>
+                    <span class="tag">RAG</span>
+                    <span class="tag">CPU-only</span>
+                </div>
+            </div>
+            <div id="info-toggle" onclick="document.getElementById('info-card').classList.toggle('open')">i</div>
+        </div>
+        """)
 
         chatbot = gr.Chatbot(
             elem_id="chatbot",
